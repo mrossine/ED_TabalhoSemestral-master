@@ -1,4 +1,4 @@
-package controller;
+	package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -178,23 +178,45 @@ public class crudDisciplinas implements ActionListener {
 
 	private void consultaDisciplina() throws IOException {
 		Disciplina auxDisciplina = new Disciplina();
-		if (tfDisciplinaNome.getText().equals("") &&
-				tfDisciplinaDia.getText().equals("") &&
-				tfDisciplinaHora.getText().equals("") &&
-				tfDisciplinaQuantidadeHora.getText().equals("") &&
-				tfDisciplinaCurso.getText().equals("")) {
-			
+		if (tfDisciplinaNome.getText().equals("") && tfDisciplinaDia.getText().equals("")
+				&& tfDisciplinaHora.getText().equals("") && tfDisciplinaQuantidadeHora.getText().equals("")
+				&& tfDisciplinaCurso.getText().equals("")) {
+			consultaTudo();
+		} else if (!tfDisciplinaNome.getText().equals("")) {
+			auxDisciplina.setNome(tfDisciplinaNome.getText());
+			auxDisciplina = consultaDisciplinaArquivo(auxDisciplina);
+			if (auxDisciplina.getDiaSemanaDisciplina() != null) {
+				taDisciplinaLista.setText("Código\tNome\tDia da Sem.\tInicio\tTempo Total\tCod Curso\n\r");
+				taDisciplinaLista.append(auxDisciplina.getIdDisciplina() + "\t" + auxDisciplina.getNome() + "\t"
+						+ auxDisciplina.getDiaSemanaDisciplina() + "\t" + auxDisciplina.getHoraInicialDisciplina()
+						+ "\t" + auxDisciplina.getQuantidadeHorasDias() + "\t" + auxDisciplina.getCodigoCurso());
+			} else {
+				taDisciplinaLista.setText("Disciplina nao encontrada");
+			}
 		} else {
-		
-		auxDisciplina.setNome(tfDisciplinaNome.getText());
-		auxDisciplina = consultaDisciplinaArquivo(auxDisciplina);
-		if (auxDisciplina.getDiaSemanaDisciplina() != null) {
-			taDisciplinaLista.setText(auxDisciplina.getIdDisciplina() + "\t" + auxDisciplina.getNome() + "\t"
-					+ auxDisciplina.getDiaSemanaDisciplina() + "\t" + auxDisciplina.getHoraInicialDisciplina() + "\t"
-					+ auxDisciplina.getCodigoCurso());
-		} else {
-			taDisciplinaLista.setText("Disciplina nao encontrada");
+			taDisciplinaLista
+					.setText("A consulta é feita apenas pelo nome da disciplina\r\nDigite o nome da disciplina");
 		}
+	}
+
+	private void consultaTudo() throws IOException {
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File arq = new File(path, "disciplinas.csv");
+		if (arq.exists() && arq.isFile()) {
+			FileInputStream fileInputStream = new FileInputStream(arq);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String linha = bufferedReader.readLine();
+			taDisciplinaLista.setText("Código\tNome\tDia da Sem.\tInicio\tTempo Total\tCod Curso\n\r");
+			while (linha != null) {
+				String[] vetorLinha = linha.split(";");
+				taDisciplinaLista.append(vetorLinha[0] + "\t" + vetorLinha[1] + "\t" + vetorLinha[2] + "\t"
+						+ vetorLinha[3] + "\t" + vetorLinha[4] + "\t" + vetorLinha[5] + "\n\r");
+				linha = bufferedReader.readLine();
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			fileInputStream.close();
 		}
 	}
 
@@ -276,7 +298,6 @@ public class crudDisciplinas implements ActionListener {
 			for (int i = 0; i < tamanho; i++) {
 				String[] vetor = lista.get(i).split(";");
 				if (tfDisciplinaNome.getText().equals(vetor[1])) {
-					System.out.println("Teste");
 					remove(lista, i);
 					break;
 				} else if (i == tamanho - 1) {
@@ -295,22 +316,21 @@ public class crudDisciplinas implements ActionListener {
 		File arq = new File(path, "disciplinas.csv");
 		lista.remove(posicao);
 		int tamanho = lista.size();
-		for (int i = 0; i < tamanho; i++) {
-			System.out.println(lista.get(i));
-		}
 		if (tamanho != 0) {
 			for (int i = 0; i < tamanho; i++) {
 				if (i == 0) {
 					FileWriter fileWriter = new FileWriter(arq, false);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(lista.get(i) + "\r\n");
+					String csv = lista.get(i);
+					printWriter.write(csv + "\r\n");
 					printWriter.flush();
 					printWriter.close();
 					fileWriter.close();
 				} else {
 					FileWriter fileWriter = new FileWriter(arq, true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(lista.get(i) + "\r\n");
+					String csv = lista.get(i);
+					printWriter.write(csv + "\r\n");
 					printWriter.flush();
 					printWriter.close();
 					fileWriter.close();

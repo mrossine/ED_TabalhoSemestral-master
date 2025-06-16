@@ -139,26 +139,58 @@ public class crudProfessor implements ActionListener {
 
 	private void buscaDisciplina() throws IOException {
 		Professor professor = new Professor();
-		if (tfProfessorCpf.getText() == null || tfProfessorCpf.getText().equals("")) {
-			taProfessorLista.setText("A consulta deve ser realizada pelo CPF");
+		if (tfProfessorNome.getText().equals("") && tfProfessorCpf.getText().equals("")
+				&& tfProfessorArea.getText().equals("")) {
+			consultaTudo();
 		} else {
-			professor.setCpf(tfProfessorCpf.getText());
-			Professor auxProf = consultaProfessorArquivo(professor);
-			if (auxProf.getNomeProfessor() == null || auxProf.getNomeProfessor().equals("")) {
-				taProfessorLista.setText("Professor não encontrado");
+			if (tfProfessorCpf.getText() == null || tfProfessorCpf.getText().equals("")) {
+				taProfessorLista.setText("A consulta deve ser realizada pelo CPF");
 			} else {
-				taProfessorLista.setText(auxProf.getNomeProfessor() + "\t" + auxProf.getCpf() + "\t"
-						+ auxProf.getAreaInteresse() + "\t" + auxProf.getQuantidadePontos());
+				professor.setCpf(tfProfessorCpf.getText());
+				Professor auxProf = consultaProfessorArquivo(professor);
+				if (auxProf.getNomeProfessor() == null || auxProf.getNomeProfessor().equals("")) {
+					taProfessorLista.setText("Professor não encontrado");
+				} else {
+					taProfessorLista.setText(auxProf.getNomeProfessor() + "\t" + auxProf.getCpf() + "\t"
+							+ auxProf.getAreaInteresse() + "\t" + auxProf.getQuantidadePontos());
+				}
 			}
+		}
+	}
+
+	private void consultaTudo() throws IOException {
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File arq = new File(path, "professores.csv");
+		if (arq.exists() && arq.isFile()) {
+			FileInputStream fileInputStream = new FileInputStream(arq);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String linha = bufferedReader.readLine();
+			taProfessorLista.setText("Nome\tCPF\tArea de Conhecimento\tPontuação\n\r");
+			while (linha != null) {
+				String[] vetorLinha = linha.split(";");
+				int tamanho = vetorLinha.length;
+				for (int i = 0; i < tamanho; i++) {
+					if (i == tamanho - 2) {
+						taProfessorLista.append(vetorLinha[i] + "\t\t");
+					} else {
+						taProfessorLista.append(vetorLinha[i] + "\t");
+					}
+				}
+				taProfessorLista.append("\n\r");
+				linha = bufferedReader.readLine();
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			fileInputStream.close();
 		}
 	}
 
 	private void excluiProfessor() throws Exception {
 		Lista<String> listaProf = new Lista<>();
-		String cpf = tfProfessorCpf.getText();
-		if (cpf == null || cpf.equals("")) {
+		if (tfProfessorCpf.getText().equals("")) {
 			taProfessorLista.setText("Para excluir o cadastro de um professor é necessário inserir o seu CPF");
-		} else  {
+		} else {
 			listaProf = alimentaLista();
 			int tamanho = listaProf.size();
 			for (int i = 0; i < tamanho; i++) {
@@ -171,7 +203,7 @@ public class crudProfessor implements ActionListener {
 				}
 			}
 		}
-		
+
 	}
 
 	private Lista<String> alimentaLista() throws Exception {

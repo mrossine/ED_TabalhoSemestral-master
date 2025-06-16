@@ -49,14 +49,14 @@ public class crudInscricao implements ActionListener {
 			}
 		} else if (command.equals("Buscar")) {
 			try {
-//				consultaCurso();
+				consultaInscricao();
 				zeraCampos();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("Atualizar")) {
 //			try {
-//				atualizaCurso();
+//				atualizaInscricao();
 //			} catch (IOException e1) {
 //				e1.printStackTrace();
 //			}
@@ -165,7 +165,7 @@ public class crudInscricao implements ActionListener {
 	private boolean verificaProcesso(String codProcesso) throws IOException {
 		boolean existe = false;
 		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
-		File arq = new File(path, "disciplinas.csv");
+		File arq = new File(path, "processos.csv");
 		if (arq.exists() && arq.isFile()) {
 			FileInputStream fileInputStream = new FileInputStream(arq);
 			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
@@ -184,5 +184,9 @@ public class crudInscricao implements ActionListener {
 			fileInputStream.close();
 		}
 		return existe;
+	}
+	
+	private void consultaInscricao() {
+		
 	}
 }

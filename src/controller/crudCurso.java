@@ -1,4 +1,4 @@
-	package controller;
+package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,12 +74,14 @@ public class crudCurso implements ActionListener {
 		if (command.equals("Cadastrar")) {
 			try {
 				insereCurso();
+				zeraCampos();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("Buscar")) {
 			try {
 				consultaCurso();
+				zeraCampos();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -92,25 +94,52 @@ public class crudCurso implements ActionListener {
 		} else if (command.equals("Excluir")) {
 			try {
 				excluiCurso();
+				zeraCampos();
 			} catch (Exception e1) {
-				System.err.println(e1.getMessage());
+				e1.printStackTrace();
 			}
 		}
 	}
 
 	private void consultaCurso() throws IOException {
 		Curso auxCurso = new Curso();
-		auxCurso.setNomeCurso(tfCursoNome.getText());
-
-		auxCurso = consultaCursoArquivo(auxCurso);
-
-		if (auxCurso.getAreaConhecimento() != null) {
-			taCursoLista.setText(
-					auxCurso.getIdCurso() + "\t" + auxCurso.getNomeCurso() + "\t" + auxCurso.getAreaConhecimento());
+		if (tfCursoNome.getText().equals("") && tfCursoNome.getText().equals("")) {
+			consultaTudo();
+		} else if (!tfCursoNome.getText().equals("")) {
+			auxCurso.setNomeCurso(tfCursoNome.getText());
+			auxCurso = consultaCursoArquivo(auxCurso);
+			if (auxCurso.getAreaConhecimento() != null) {
+				taCursoLista.setText(
+						auxCurso.getIdCurso() + "\t" + auxCurso.getNomeCurso() + "\t" + auxCurso.getAreaConhecimento());
+			} else {
+				taCursoLista.setText("Curso não encontrado");
+			}
 		} else {
-			taCursoLista.setText("Curso não encontrado");
+			taCursoLista.setText("A consulta é feita apenas pelo nome da disciplina\r\nDigite o nome da disciplina");
 		}
-		zeraCampos();
+	}
+
+	private void consultaTudo() throws IOException {
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File arq = new File(path, "cursos.csv");
+		if (arq.exists() && arq.isFile()) {
+			FileInputStream fileInputStream = new FileInputStream(arq);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String linha = bufferedReader.readLine();
+			taCursoLista.setText("Código\tNome\tArea de Conhecimento\n\r");
+			while (linha != null) {
+				String[] vetorLinha = linha.split(";");
+				for (String i : vetorLinha) {
+					taCursoLista.append(i + "\t");
+				}
+				taCursoLista.append("\n\r");
+				linha = bufferedReader.readLine();
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			fileInputStream.close();
+		}
 	}
 
 	private void insereCurso() throws IOException {
@@ -127,7 +156,6 @@ public class crudCurso implements ActionListener {
 		} else {
 			taCursoLista.setText("Curso já foi cadastrado");
 		}
-		zeraCampos();
 	}
 
 	private Curso consultaCursoArquivo(Curso curso) throws IOException {
@@ -180,7 +208,6 @@ public class crudCurso implements ActionListener {
 		String verifica = tfCursoNome.getText();
 		if (verifica == null || verifica.equals("")) {
 			taCursoLista.setText("Digite o nome da disciplina que será excluída");
-			zeraCampos();
 		} else {
 			lista = alimentaLista();
 			int tamanho = lista.size();
@@ -188,13 +215,72 @@ public class crudCurso implements ActionListener {
 				String[] vetor = lista.get(i).split(";");
 				if (tfCursoNome.getText().equals(vetor[1])) {
 					remove(lista, i);
+					removeDisciplina(vetor[0]);
 					break;
 				} else if (i == tamanho - 1) {
 					taCursoLista.setText("Disciplina não encontrada");
 				}
 			}
-			zeraCampos();
 		}
+	}
+
+	private void removeDisciplina(String codCurso) throws Exception {
+		Lista<String> lista = new Lista<>();
+		lista = alimentaListaSemDisciplina(codCurso);
+		reescreveDisciplinas(lista);
+	}
+
+	private void reescreveDisciplinas(Lista<String> lista) throws Exception {
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File dir = new File(path);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+		File arq = new File(path, "disciplinas.csv");
+		int tamanho = lista.size();
+		if (tamanho != 0) {
+			for (int i = 0; i < tamanho; i++) {
+				if (i == 0) {
+					FileWriter fileWriter = new FileWriter(arq, false);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(lista.get(i) + "\r\n");
+					printWriter.flush();
+					printWriter.close();
+					fileWriter.close();
+				} else {
+					FileWriter fileWriter = new FileWriter(arq, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(lista.get(i) + "\r\n");
+					printWriter.flush();
+					printWriter.close();
+					fileWriter.close();
+				}
+			}
+		}
+	}
+
+	private Lista<String> alimentaListaSemDisciplina(String codCurso) throws Exception {
+		Lista<String> lista = new Lista<>();
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File arq = new File(path, "disciplinas.csv");
+		if (arq.exists() && arq.isFile()) {
+			FileInputStream fileInputStream = new FileInputStream(arq);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String linha = bufferedReader.readLine();
+			while (linha != null) {
+				String[] vetorLinha = linha.split(linha);
+				int tamanho = vetorLinha.length;
+				if (vetorLinha[tamanho - 1].equals(codCurso)) {
+					lista.addLast(linha);
+				}
+				linha = bufferedReader.readLine();
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			fileInputStream.close();
+		}
+		return lista;
 	}
 
 	private Lista<String> alimentaLista() throws Exception {
@@ -245,6 +331,5 @@ public class crudCurso implements ActionListener {
 				}
 			}
 		}
-		zeraCampos();
 	}
 }

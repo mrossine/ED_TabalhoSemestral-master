@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import controller.crudCurso;
 import controller.crudDisciplinas;
 import controller.crudInscricao;
+import controller.crudProcesso;
 import controller.crudProfessor;
 
 import javax.swing.JTabbedPane;
@@ -390,6 +391,7 @@ public class Tela extends JFrame {
 		crudDisciplinas crudDisc = new crudDisciplinas(tfDisciplinaNome, tfDisciplinaDia, tfDisciplinaHora, tfDisciplinaQuantidadeHora,tfDisciplinaCurso, taDisciplinaLista);
 		crudProfessor crudProfessor = new crudProfessor(tfProfessorNome, tfProfessorCpf, tfProfessorArea, taProfessorLista);
 		crudInscricao crudInscricao = new crudInscricao(tfInscricaoCpfprofessor, tfInscricaoIdDisciplina, tfInscricaoCodProcesso, taInscricaoLista);
+		crudProcesso crudProcesso = new crudProcesso(tfProcessoIdDisciplina, taProcessoLista);
 		
 		btnCursoCadastrar.addActionListener(crudCurso);
 		btnCursoBuscar.addActionListener(crudCurso);
@@ -410,5 +412,9 @@ public class Tela extends JFrame {
 		btnInscricaoBuscar.addActionListener(crudInscricao);
 		btnInscricaoAtualizar.addActionListener(crudInscricao);
 		btnInscricaoExcluir.addActionListener(crudInscricao);
+		
+		btnProcessoAbrir.addActionListener(crudProcesso);
+		btnProcessoBuscar.addActionListener(crudProcesso);
+		btnProcessoFechar.addActionListener(crudProcesso);
 	}
 }
