@@ -1,4 +1,4 @@
- package view;
+package view;
 
 import java.awt.EventQueue;
 
@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import controller.crudCurso;
 import controller.crudDisciplinas;
+import controller.crudInscricao;
 import controller.crudProfessor;
 
 import javax.swing.JTabbedPane;
@@ -37,6 +38,7 @@ public class Tela extends JFrame {
 	private JTextField tfInscricaoIdDisciplina;
 	private JTextField tfInscricaoCodProcesso;
 	private JTextField tfDisciplinaCurso;
+	private JTextField tfProcessoIdDisciplina;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -340,9 +342,54 @@ public class Tela extends JFrame {
 		btnDisciplinaExcluir.setBounds(447, 190, 106, 46);
 		tabDisciplina.add(btnDisciplinaExcluir);
 		
+		JPanel tabProcesso = new JPanel();
+		tabbedPane.addTab("Processo", null, tabProcesso, null);
+		tabProcesso.setLayout(null);
+		
+		JLabel lblProcessoIdDisciplina = new JLabel("Código da Disciplina:");
+		lblProcessoIdDisciplina.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblProcessoIdDisciplina.setBounds(29, 71, 150, 32);
+		tabProcesso.add(lblProcessoIdDisciplina);
+		
+		JLabel lblAberturaDeProcessos = new JLabel("Abertura de Processos");
+		lblAberturaDeProcessos.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblAberturaDeProcessos.setBounds(233, 10, 199, 32);
+		tabProcesso.add(lblAberturaDeProcessos);
+		
+		tfProcessoIdDisciplina = new JTextField();
+		tfProcessoIdDisciplina.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tfProcessoIdDisciplina.setColumns(10);
+		tfProcessoIdDisciplina.setBounds(187, 70, 382, 35);
+		tabProcesso.add(tfProcessoIdDisciplina);
+		
+		JButton btnProcessoBuscar = new JButton("Buscar");
+		btnProcessoBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnProcessoBuscar.setBounds(280, 115, 95, 23);
+		tabProcesso.add(btnProcessoBuscar);
+		
+		JButton btnProcessoAbrir = new JButton("Abrir");
+		btnProcessoAbrir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnProcessoAbrir.setBounds(373, 115, 95, 23);
+		tabProcesso.add(btnProcessoAbrir);
+		
+		JButton btnProcessoFechar = new JButton("Fechar");
+		btnProcessoFechar.setBounds(466, 115, 95, 23);
+		tabProcesso.add(btnProcessoFechar);
+		
+		JTextArea taProcessoLista = new JTextArea();
+		taProcessoLista.setBounds(10, 182, 579, 200);
+		tabProcesso.add(taProcessoLista);
+		
 		crudCurso crudCurso = new crudCurso(tfCursoNome, tfCursoAreaConhecimento, taCursoLista);
 		crudDisciplinas crudDisc = new crudDisciplinas(tfDisciplinaNome, tfDisciplinaDia, tfDisciplinaHora, tfDisciplinaQuantidadeHora,tfDisciplinaCurso, taDisciplinaLista);
 		crudProfessor crudProfessor = new crudProfessor(tfProfessorNome, tfProfessorCpf, tfProfessorArea, taProfessorLista);
+		crudInscricao crudInscricao = new crudInscricao(tfInscricaoCpfprofessor, tfInscricaoIdDisciplina, tfInscricaoCodProcesso, taInscricaoLista);
 		
 		btnCursoCadastrar.addActionListener(crudCurso);
 		btnCursoBuscar.addActionListener(crudCurso);
@@ -358,5 +405,10 @@ public class Tela extends JFrame {
 		btnProfessorBuscar.addActionListener(crudProfessor);
 		btnProfessorAtualizar.addActionListener(crudProfessor);
 		btnProfessorExcluir.addActionListener(crudProfessor);
+		
+		btnInscricaoCadastrar.addActionListener(crudInscricao);
+		btnInscricaoBuscar.addActionListener(crudInscricao);
+		btnInscricaoAtualizar.addActionListener(crudInscricao);
+		btnInscricaoExcluir.addActionListener(crudInscricao);
 	}
 }

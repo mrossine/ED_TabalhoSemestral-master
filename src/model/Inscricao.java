@@ -24,5 +24,10 @@ public class Inscricao {
 	public void setCodigoProcesso(String codigoProcesso) {
 		this.codigoProcesso = codigoProcesso;
 	}
+	@Override
+	public String toString() {
+		return cpfProfessor + ";" + idDisciplina + ";"
+				+ codigoProcesso;
+	}
 	
 }

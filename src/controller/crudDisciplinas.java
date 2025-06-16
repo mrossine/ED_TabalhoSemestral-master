@@ -18,8 +18,6 @@ import model.Disciplina;
 
 public class crudDisciplinas implements ActionListener {
 
-	Lista<String> disciplinas;
-
 	private int idDisciplina;
 	private String idCurso;
 
@@ -109,24 +107,28 @@ public class crudDisciplinas implements ActionListener {
 		if (command.equals("Cadastrar")) {
 			try {
 				insereDisciplina();
+				zeraCampos();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("Buscar")) {
 			try {
 				consultaDisciplina();
+				zeraCampos();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("Atualizar")) {
 			try {
 				atualizaDisciplina();
+				zeraCampos();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("Excluir")) {
 			try {
 				excluiDisciplina();
+				zeraCampos();	
 			} catch (Exception e1) {
 				System.err.println(e1.getMessage());
 			}
@@ -153,7 +155,6 @@ public class crudDisciplinas implements ActionListener {
 				taDisciplinaLista.setText("Disciplina ja foi cadastrada");
 			}
 		}
-		zeraCampos(); 
 	}
 
 	private void adicionaDisciplinaArquivo(String csvDisciplina) throws IOException {
@@ -177,10 +178,10 @@ public class crudDisciplinas implements ActionListener {
 
 	private void consultaDisciplina() throws IOException {
 		Disciplina auxDisciplina = new Disciplina();
+		
+		
 		auxDisciplina.setNome(tfDisciplinaNome.getText());
-
 		auxDisciplina = consultaDisciplinaArquivo(auxDisciplina);
-
 		if (auxDisciplina.getDiaSemanaDisciplina() != null) {
 			taDisciplinaLista.setText(auxDisciplina.getIdDisciplina() + "\t" + auxDisciplina.getNome() + "\t"
 					+ auxDisciplina.getDiaSemanaDisciplina() + "\t" + auxDisciplina.getHoraInicialDisciplina() + "\t"
@@ -188,7 +189,6 @@ public class crudDisciplinas implements ActionListener {
 		} else {
 			taDisciplinaLista.setText("Disciplina nao encontrada");
 		}
-		zeraCampos();
 	}
 
 	private Disciplina consultaDisciplinaArquivo(Disciplina disciplina) throws IOException {
@@ -229,8 +229,7 @@ public class crudDisciplinas implements ActionListener {
 		} else {
 			taDisciplinaLista.setText("Disciplina nao encontrada");
 		}
-		zeraCampos();
-	}
+	}	
 
 	private Disciplina consultaDisciplinaArquivoAtualiza(Disciplina disciplina) throws IOException {
 		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
@@ -264,7 +263,6 @@ public class crudDisciplinas implements ActionListener {
 		String verifica = tfDisciplinaNome.getText();
 		if (verifica == null || verifica.equals("")) {
 			taDisciplinaLista.setText("Digite o nome da disciplina que será excluída");
-			zeraCampos();
 		} else {
 			lista = alimentaLista();
 			int tamanho = lista.size();
@@ -312,7 +310,6 @@ public class crudDisciplinas implements ActionListener {
 				}
 			}
 		}
-		zeraCampos();
 	}
 
 	private Lista<String> alimentaLista() throws Exception {

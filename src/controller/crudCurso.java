@@ -226,9 +226,6 @@ public class crudCurso implements ActionListener {
 		File arq = new File(path, "cursos.csv");
 		lista.remove(posicao);
 		int tamanho = lista.size();
-		for (int i = 0; i < tamanho; i++) {
-			System.out.println(lista.get(i));
-		}
 		if (tamanho != 0) {
 			for (int i = 0; i < tamanho; i++) {
 				if (i == 0) {

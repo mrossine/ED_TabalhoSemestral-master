@@ -174,12 +174,53 @@ public class crudProfessor implements ActionListener {
 		
 	}
 
-	private Lista<String> alimentaLista() {
-		// TODO Auto-generated method stub
-		return null;
+	private Lista<String> alimentaLista() throws Exception {
+		Lista<String> lista = new Lista<>();
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File arq = new File(path, "professores.csv");
+		if (arq.exists() && arq.isFile()) {
+			FileInputStream fileInputStream = new FileInputStream(arq);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String linha = bufferedReader.readLine();
+			while (linha != null) {
+				lista.addLast(linha);
+				linha = bufferedReader.readLine();
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			fileInputStream.close();
+		}
+		return lista;
 	}
 
-	private void remove(Lista<String> listaProf, int posicao) {
-		
+	private void remove(Lista<String> listaProf, int posicao) throws Exception {
+		String path = System.getProperty("user.home") + File.separator + "Sistema Contratação";
+		File dir = new File(path);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+		File arq = new File(path, "professores.csv");
+		listaProf.remove(posicao);
+		int tamanho = listaProf.size();
+		if (tamanho != 0) {
+			for (int i = 0; i < tamanho; i++) {
+				if (i == 0) {
+					FileWriter fileWriter = new FileWriter(arq, false);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(listaProf.get(i) + "\r\n");
+					printWriter.flush();
+					printWriter.close();
+					fileWriter.close();
+				} else {
+					FileWriter fileWriter = new FileWriter(arq, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(listaProf.get(i) + "\r\n");
+					printWriter.flush();
+					printWriter.close();
+					fileWriter.close();
+				}
+			}
+		}
 	}
 }
